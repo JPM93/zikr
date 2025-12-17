@@ -1,2 +1,2 @@
 # zikr
-frontend for zikr– Ibadat Tracking Platform
+static app(only frontend) for zikr/wazifa – Ibadat Tracking Platform
