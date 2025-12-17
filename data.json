@@ -20,9 +20,9 @@
     "romanUrdu": "Allah paak hai",
     "description": "Subhan Allah kehne se 100 sawab milte hain aur 100 gunah maaf hote hain. Ye Zikr tasbeeh me sub se zyada padha jata hai.",
     "isFixedLevel": false,
-    "mukhtasarThreshold": 33,
-    "wasatThreshold": 66,
-    "mukammalThreshold": 100,
+    "mukhtasarThreshold": 11,
+    "wasatThreshold": 33,
+    "mukammalThreshold": 99,
     "totalCount": 0
   },
   {
@@ -33,9 +33,9 @@
     "romanUrdu": "Tamam tareef Allah ke liye hai",
     "description": "Alhamdulillah kehne se niyamat badhti hain aur takleef door hoti hai. Har khushi aur takleef me Allah ka shukr ada karna chahiye.",
     "isFixedLevel": false,
-    "mukhtasarThreshold": 33,
-    "wasatThreshold": 66,
-    "mukammalThreshold": 100,
+    "mukhtasarThreshold": 11,
+    "wasatThreshold": 33,
+    "mukammalThreshold": 99,
     "totalCount": 0
   },
   {
@@ -46,9 +46,9 @@
     "romanUrdu": "Allah sabse bada hai",
     "description": "Allahu Akbar kehne se shaitan door bhagta hai aur dil ko sukoon milta hai. Namaz me ye sab se zyada bola jane wala kalma hai.",
     "isFixedLevel": false,
-    "mukhtasarThreshold": 33,
-    "wasatThreshold": 66,
-    "mukammalThreshold": 100,
+    "mukhtasarThreshold": 11,
+    "wasatThreshold": 33,
+    "mukammalThreshold": 99,
     "totalCount": 0
   },
   {

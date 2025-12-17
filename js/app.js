@@ -281,16 +281,23 @@ function updateFloatingCounter() {
     const maxCount = currentZikr[`${currentLevel}Threshold`];
     
     const floatingCounterDisplay = document.getElementById('floatingCounterDisplay');
-    const counterInfo = document.getElementById('counterInfo');
+    const targetDisplay = document.getElementById('targetDisplay');
     
-    if (!floatingCounterDisplay || !counterInfo) return;
+    if (!floatingCounterDisplay || !targetDisplay) return;
     
     if (currentZikr.isFixedLevel) {
         floatingCounter.style.display = 'none';
     } else {
         floatingCounter.style.display = 'block';
-        counterInfo.textContent = `Target: ${maxCount} | Level: ${currentLevel.toUpperCase()}`;
+        targetDisplay.textContent = `Target: ${maxCount}`;
         floatingCounterDisplay.textContent = currentZikr.totalCount;
+        
+        // ✅ Fix: Display total count if you have the element
+        const totalCountDisplay = document.getElementById('totalCountDisplay');
+        if (totalCountDisplay) {
+            const totalCount = zikrData.reduce((sum, zikr) => sum + (zikr.totalCount || 0), 0);
+            totalCountDisplay.textContent = `Total: ${totalCount}`;
+        }
     }
 }
 
@@ -333,16 +340,12 @@ function renderZikrSlider() {
     card.innerHTML = `
         <div class="zikr-title">${currentZikr.title}</div>
         
-        <div class="language-tabs">
-            <button class="tab-btn ${currentLanguage === 'arabic' ? 'active' : ''}" data-lang="arabic">
-                Arabic
-            </button>
-            <button class="tab-btn ${currentLanguage === 'romanArabic' ? 'active' : ''}" data-lang="romanArabic">
-                Roman Arabic
-            </button>
-            <button class="tab-btn ${currentLanguage === 'romanUrdu' ? 'active' : ''}" data-lang="romanUrdu">
-                Roman Urdu
-            </button>
+        <div class="language-dropdown" style="display: flex; justify-content: center; margin-bottom: 20px;">
+            <select class="language-select" id="languageSelect">
+                <option value="arabic" ${currentLanguage === 'arabic' ? 'selected' : ''}>Arabic</option>
+                <option value="romanArabic" ${currentLanguage === 'romanArabic' ? 'selected' : ''}>Roman Arabic</option>
+                <option value="romanUrdu" ${currentLanguage === 'romanUrdu' ? 'selected' : ''}>Roman Urdu</option>
+            </select>
         </div>
         
         <div class="zikr-content">
@@ -380,18 +383,26 @@ function renderZikrSlider() {
     navDiv.className = 'nav-buttons';
     navDiv.innerHTML = `
         <button class="nav-btn" id="prevBtn" ${currentZikrIndex === 0 ? 'disabled' : ''} onclick="prevZikr()">
-            ⏮ Previous
+            ⏮
         </button>
         <div class="progress">
             ${currentZikrIndex + 1} of ${zikrData.length}
         </div>
         <button class="nav-btn" id="nextBtn" ${currentZikrIndex === zikrData.length - 1 ? 'disabled' : ''} onclick="nextZikr()">
-            Next ⏭
+            ⏭
         </button>
     `;
     zikrSlider.appendChild(navDiv);
     
     updateLevelButtons();
+
+    document.addEventListener('change', function(e) {
+        if (e.target.id === 'languageSelect') {
+            currentLanguage = e.target.value;
+            renderZikrSlider();
+            saveToStorage();
+        }
+    });
 }
 
 // Show tooltip
@@ -514,21 +525,8 @@ function resetCount(zikrId) {
 
 // Event Listeners setup
 function setupEventListeners() {
-    // Language tab click
+    // Level button click
     document.addEventListener('click', function(e) {
-        if (e.target.classList.contains('tab-btn')) {
-            currentLanguage = e.target.dataset.lang;
-            
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            e.target.classList.add('active');
-            
-            renderZikrSlider();
-            saveToStorage();
-        }
-        
-        // Level button click
         if (e.target.classList.contains('level-btn')) {
             currentLevel = e.target.dataset.level;
             
@@ -536,6 +534,9 @@ function setupEventListeners() {
                 btn.classList.remove('active');
             });
             e.target.classList.add('active');
+            
+            // ✅ IMPORTANT: Update floating counter
+            updateFloatingCounter();
             
             renderZikrSlider();
             saveToStorage();

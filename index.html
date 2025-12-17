@@ -103,12 +103,39 @@
         }
         
         /* Language Tabs */
-        .language-tabs {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
+        .language-dropdown {
+            text-align: center;
             margin-bottom: 20px;
-            flex-wrap: wrap;
+            position: relative;
+            display: inline-block;
+            width: 200px;
+        }
+
+        .language-select {
+            padding: 12px 20px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s;
+            width: 100%;
+            text-align: center;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 20px;
+        }
+
+        .language-select:hover {
+            background-color: #e0e0e0;
+        }
+
+        .language-select:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(21, 152, 149, 0.2);
         }
         
         .tab-btn {
@@ -299,13 +326,15 @@
             bottom: 30px;
             right: 30px;
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
-            padding: 15px;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 20px;
             z-index: 100;
-            min-width: 150px;
+            width: 180px;
             border: 2px solid #159895;
             animation: slideUp 0.3s ease;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
         }
         
         @keyframes slideUp {
@@ -321,20 +350,22 @@
         
         .counter-header {
             text-align: center;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
         
         .counter-display {
-            font-size: 36px;
+            font-size: 32px;
             font-weight: bold;
             color: #002b5b;
             text-align: center;
-            margin: 10px 0;
-            transition: transform 0.2s;
+            margin: 15px 0;
+            transition: all 0.3s;
+            font-family: 'Arial Rounded MT Bold', 'Segoe UI', sans-serif;
+            text-shadow: 0 2px 5px rgba(0, 43, 91, 0.1);
         }
         
         .counter-info {
-            font-size: 12px;
+            font-size: 13px;
             color: #666;
             text-align: center;
             margin-bottom: 10px;
@@ -342,45 +373,68 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
+            flex-wrap: wrap;
         }
         
         .counter-buttons {
             display: flex;
+            flex-direction: row;
             gap: 10px;
-            margin-top: 10px;
+            margin-top: 15px;
         }
         
         .counter-btn {
-            padding: 10px 15px;
+            padding: 12px;
             font-size: 16px;
             border: none;
             border-radius: 15px;
             cursor: pointer;
             font-weight: bold;
             transition: all 0.3s;
-            flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 5px;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .counter-target {
+            background: #e3f4f4;
+            padding: 4px 10px;
+            border-radius: 10px;
+            font-weight: 400;
+            font-size: smaller;
+            color: #159895;
+        }
+
+        .counter-level {
+            background: #f0f7f7;
+            padding: 4px 10px;
+            border-radius: 10px;
+            font-weight: 600;
+            color: #1a5f7a;
         }
         
         .increment-btn {
-            background: #159895;
+            background: linear-gradient(135deg, #159895, #1a5f7a);
             color: white;
         }
-        
+
         .increment-btn:hover {
-            background: #127a77;
+            background: linear-gradient(135deg, #127a77, #002b5b);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(21, 152, 149, 0.3);
         }
-        
+
         .reset-btn {
-            background: #ff6b6b;
+            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
             color: white;
         }
-        
+
         .reset-btn:hover {
-            background: #ff5252;
+            background: linear-gradient(135deg, #ff5252, #ff6b6b);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
         }
         
         /* Footer */
@@ -439,102 +493,77 @@
             margin-bottom: 10px;
             color: #002b5b;
         }
-        
+
+        .total-count {
+            text-align: center;
+            font-size: 12px;
+            color: #888;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
-            .container {
-                margin: 10px;
-                border-radius: 15px;
+            .nav-buttons {
+                flex-direction: row !important; /* Force horizontal layout */
+                gap: 10px;
+                flex-wrap: nowrap;
+                align-items: center;
             }
             
-            .zikr-slider {
-                padding: 20px;
-                min-height: 450px;
+            .nav-btn {
+                flex: 1;
+                min-width: 100px;
+                padding: 10px 15px;
+                font-size: 14px;
             }
             
-            .zikr-content {
-                padding: 20px;
-                min-height: 200px;
+            .progress {
+                flex: 0 0 auto;
+                white-space: nowrap;
+                font-size: 14px;
+                padding: 0 10px;
             }
-            
-            .zikr-text {
-                font-size: 20px;
-            }
-            
-            .arabic-text {
-                font-size: 24px;
-            }
-            
+
             .floating-counter {
                 bottom: 20px;
                 right: 20px;
-                left: 20px;
-                min-width: auto;
+                left: auto;
+                width: 160px;
+                padding: 15px;
+            }
+            
+            .counter-display {
+                font-size: 36px;
+            }
+        }
+
+        /* Add for very small screens */
+        @media (max-width: 480px) {
+            .nav-buttons {
+                gap: 5px;
+            }
+            
+            .nav-btn {
+                min-width: 80px;
+                padding: 8px 10px;
+                font-size: 12px;
+            }
+            
+            .progress {
+                font-size: 12px;
+                padding: 0 5px;
+            }
+
+            .floating-counter {
+                bottom: 15px;
+                right: 15px;
+                width: 150px;
+                padding: 12px;
             }
             
             .counter-display {
                 font-size: 32px;
-            }
-            
-            .nav-buttons {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .nav-btn {
-                width: 100%;
-            }
-            
-            .level-selector {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .language-tabs {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .tab-btn {
-                width: 90%;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            body {
-                padding: 10px;
-            }
-            
-            .header {
-                padding: 20px;
-            }
-            
-            .header h1 {
-                font-size: 24px;
-            }
-            
-            .zikr-title {
-                font-size: 20px;
-            }
-            
-            .zikr-content {
-                padding: 15px;
-                min-height: 180px;
-            }
-            
-            .zikr-text {
-                font-size: 18px;
-            }
-            
-            .arabic-text {
-                font-size: 22px;
-            }
-            
-            .floating-counter {
-                bottom: 15px;
-                right: 15px;
-                left: 15px;
-                padding: 12px;
             }
         }
 
@@ -631,18 +660,22 @@
     <div class="floating-counter" id="floatingCounter" style="display: none;">
         <div class="counter-header">
             <div class="counter-info" id="counterInfo">
-                Target: - | Level: -
+                <span class="counter-target" id="targetDisplay">Target: -</span>
             </div>
             <div class="counter-display" id="floatingCounterDisplay">
                 0
             </div>
+            <!-- ✅ Add this line for total count -->
+            <div class="total-count" id="totalCountDisplay">
+                Total: 0
+            </div>
         </div>
         <div class="counter-buttons">
             <button class="counter-btn increment-btn" id="floatingIncrementBtn">
-                <i class="fas fa-plus"></i> Count
+                <i class="fas fa-plus-circle"></i>
             </button>
             <button class="counter-btn reset-btn" id="floatingResetBtn">
-                <i class="fas fa-redo"></i> Reset
+                <i class="fas fa-redo-alt"></i>
             </button>
         </div>
     </div>
