@@ -155,9 +155,9 @@ function selectRecord(id) {
     document.getElementById('romanUrdu').value = record.romanUrdu || '';
     document.getElementById('description').value = record.description || '';
     document.getElementById('isFixedLevel').checked = record.isFixedLevel || false;
-    document.getElementById('mukhtasarThreshold').value = record.mukhtasarThreshold || 11;
-    document.getElementById('wasatThreshold').value = record.wasatThreshold || 21;
-    document.getElementById('mukammalThreshold').value = record.mukammalThreshold || 33;
+    document.getElementById('mukhtasarThreshold').value = record.mukhtasarThreshold || 3;
+    document.getElementById('wasatThreshold').value = record.wasatThreshold || 7;
+    document.getElementById('mukammalThreshold').value = record.mukammalThreshold || 11;
     
     // Show delete button
     deleteBtn.style.display = 'flex';
@@ -200,9 +200,9 @@ function resetForm() {
     
     // Set default values
     document.getElementById('recordId').value = '0';
-    document.getElementById('mukhtasarThreshold').value = 11;
-    document.getElementById('wasatThreshold').value = 21;
-    document.getElementById('mukammalThreshold').value = 33;
+    document.getElementById('mukhtasarThreshold').value = 4;
+    document.getElementById('wasatThreshold').value = 7;
+    document.getElementById('mukammalThreshold').value = 11;
     document.getElementById('isFixedLevel').checked = false;
     document.getElementById('description').value = '';
     
@@ -219,9 +219,9 @@ function toggleThresholdVisibility() {
     thresholdSection.style.display = isFixed ? 'none' : 'block';
     
     if (isFixed) {
-        document.getElementById('mukhtasarThreshold').value = 1;
-        document.getElementById('wasatThreshold').value = 1;
-        document.getElementById('mukammalThreshold').value = 1;
+        document.getElementById('mukhtasarThreshold').value = 3;
+        document.getElementById('wasatThreshold').value = 7;
+        document.getElementById('mukammalThreshold').value = 11;
     }
 }
 
@@ -493,6 +493,59 @@ function hideStatus() {
     statusMessage.style.display = 'none';
 }
 
+// Threshold increment/decrement handler
+function setupThresholdControls() {
+    // Mukhtasar threshold controls
+    const mukhtasarInput = document.getElementById('mukhtasarThreshold');
+    if (mukhtasarInput) {
+        mukhtasarInput.addEventListener('change', function() {
+            // Ensure value is odd
+            if (this.value % 2 === 0) {
+                this.value = parseInt(this.value) + 1;
+            }
+            // Ensure minimum 3
+            if (this.value < 3) this.value = 3;
+        });
+        
+        // Step by 2
+        mukhtasarInput.step = 2;
+    }
+    
+    // Wasat threshold controls
+    const wasatInput = document.getElementById('wasatThreshold');
+    if (wasatInput) {
+        wasatInput.addEventListener('change', function() {
+            // Ensure value is odd
+            if (this.value % 2 === 0) {
+                this.value = parseInt(this.value) + 1;
+            }
+            // Ensure minimum 7
+            if (this.value < 7) this.value = 7;
+        });
+        
+        // Step by 2
+        wasatInput.step = 2;
+    }
+    
+    // Mukammal threshold controls
+    const mukammalInput = document.getElementById('mukammalThreshold');
+    if (mukammalInput) {
+        mukammalInput.addEventListener('change', function() {
+            // Ensure value is odd
+            if (this.value % 2 === 0) {
+                this.value = parseInt(this.value) + 1;
+            }
+            // Ensure minimum 11
+            if (this.value < 11) this.value = 11;
+        });
+        
+        // Step by 2
+        mukammalInput.step = 2;
+    }
+    
+    console.log('Threshold controls setup with step=2');
+}
+
 // Event Listeners
 document.addEventListener('DOMContentLoaded', function() {
     // Load initial data
@@ -531,6 +584,8 @@ document.addEventListener('DOMContentLoaded', function() {
             resetForm();
         }
     });
+
+    setupThresholdControls();
 });
 
 // Make functions available globally
