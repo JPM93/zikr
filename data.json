@@ -1,0 +1,67 @@
+[
+  {
+    "id": 1,
+    "title": "Zikr | Surah As-Saff (61:13)",
+    "arabic": "نَصْرٌ مِّنَ اللّٰهِ وَفَتْحٌ قَرِيب",
+    "romanArabic": "Nasrum-minallāhi wa fatḥun qarīb",
+    "romanUrdu": "Allah ki taraf se madad aur qareeb aane wali fatah (kamiyabi).",
+    "description": "Is Zikr ko padhne se Allah ki taraf se nusrat aur qareeb aane wali fatah (kamiyabi) milti hai. Rozana 11, 21 ya 33 martaba padhna sawab ka zariya hai.",
+    "isFixedLevel": false,
+    "mukhtasarThreshold": 11,
+    "wasatThreshold": 21,
+    "mukammalThreshold": 33,
+    "totalCount": 0
+  },
+  {
+    "id": 2,
+    "title": "Subhan Allah",
+    "arabic": "سُبْحَانَ اللَّهِ",
+    "romanArabic": "Subhan Allah",
+    "romanUrdu": "Allah paak hai",
+    "description": "Subhan Allah kehne se 100 sawab milte hain aur 100 gunah maaf hote hain. Ye Zikr tasbeeh me sub se zyada padha jata hai.",
+    "isFixedLevel": false,
+    "mukhtasarThreshold": 33,
+    "wasatThreshold": 66,
+    "mukammalThreshold": 100,
+    "totalCount": 0
+  },
+  {
+    "id": 3,
+    "title": "Alhamdulillah",
+    "arabic": "الْحَمْدُ لِلَّهِ",
+    "romanArabic": "Alhamdulillah",
+    "romanUrdu": "Tamam tareef Allah ke liye hai",
+    "description": "Alhamdulillah kehne se niyamat badhti hain aur takleef door hoti hai. Har khushi aur takleef me Allah ka shukr ada karna chahiye.",
+    "isFixedLevel": false,
+    "mukhtasarThreshold": 33,
+    "wasatThreshold": 66,
+    "mukammalThreshold": 100,
+    "totalCount": 0
+  },
+  {
+    "id": 4,
+    "title": "Allahu Akbar",
+    "arabic": "اللهُ أَكْبَرُ",
+    "romanArabic": "Allahu Akbar",
+    "romanUrdu": "Allah sabse bada hai",
+    "description": "Allahu Akbar kehne se shaitan door bhagta hai aur dil ko sukoon milta hai. Namaz me ye sab se zyada bola jane wala kalma hai.",
+    "isFixedLevel": false,
+    "mukhtasarThreshold": 33,
+    "wasatThreshold": 66,
+    "mukammalThreshold": 100,
+    "totalCount": 0
+  },
+  {
+    "id": 5,
+    "title": "Surah Al-Baqarah – Ayat 1–4",
+    "arabic": "الٓمٓ <br> ذَٰلِكَ الْكِتَابُ لَا رَيْبَ ۛ فِيهِ ۛ هُدًى لِّلْمُتَّقِينَ <br> الَّذِينَ يُؤْمِنُونَ بِالْغَيْبِ وَيُقِيمُونَ الصَّلَاةَ وَمِمَّا رَزَقْنَاهُمْ يُنفِقُونَ <br> وَالَّذِينَ يُؤْمِنُونَ بِمَا أُنزِلَ إِلَيْكَ وَمَا أُنزِلَ مِن قَبْلِكَ وَبِالْآخِرَةِ هُمْ يُوقِنُونَ",
+    "romanArabic": "Alif Lām Mīm<br>Dhalika al-kitābu lā rayba fīhi hudan lil-muttaqīn<br>Alladhīna yu'minūna bil-ghaybi wa yuqīmūna ṣ-ṣalāta wa mimmā razaqnāhum yunfiqūn<br>Walladhīna yu'minūna bimā unzila ilayka wa mā unzila min qablika wa bil-ākhirati hum yūqinūn",
+    "romanUrdu": "Alif Lam Meem<br>Yeh kitaab hai, jismein koi shaq nahi, rehmat aur hidayat hai muttaqiyon ke liye<br>Jo log ghaib par iman rakhte hain aur namaz qayam karte hain aur jo kuch humne unko rizq diya, usme se kharch karte hain<br>Aur jo log iman late hain us cheez par jo aap par nazil hui aur us par jo pehle nazil hui, aur aakhirat par woh yaqeen rakhte hain",
+    "description": "Yeh Quran ki pehli aayatein hain jo muttaqiyon ki sifat bayan karti hain. Inhein padhne se iman mazboot hota hai aur hidayat milti hai. Rozana ek martaba padhna kafi hai.",
+    "isFixedLevel": true,
+    "mukhtasarThreshold": 1,
+    "wasatThreshold": 1,
+    "mukammalThreshold": 1,
+    "totalCount": 0
+  }
+]
