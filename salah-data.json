@@ -1,0 +1,38 @@
+{
+  "salahTracker": {
+    "users": {
+      "default": {
+        "currentStreak": 0,
+        "longestStreak": 0,
+        "totalDays": 0,
+        "averageCompletion": 0
+      }
+    },
+    "dailyRecords": [
+      {
+        "date": "2024-01-01",
+        "farz": {
+          "fajr": { "status": "completed", "time": "06:00", "withJamaat": true },
+          "zuhr": { "status": "completed", "time": "13:30", "withJamaat": true },
+          "asr": { "status": "completed", "time": "16:45", "withJamaat": false },
+          "maghrib": { "status": "completed", "time": "18:20", "withJamaat": true },
+          "isha": { "status": "completed", "time": "20:00", "withJamaat": true }
+        },
+        "witr": { "status": "completed", "time": "20:30", "rakats": 3 },
+        "nafal": {
+          "tahajjud": false,
+          "ishraq": true,
+          "chast": false,
+          "avabin": true,
+          "sunnat": {
+            "fajr": true,
+            "zuhr_before": true,
+            "zuhr_after": true,
+            "maghrib": true,
+            "isha": true
+          }
+        }
+      }
+    ]
+  }
+}
