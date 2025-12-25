@@ -1633,17 +1633,17 @@ function calculateZakat() {
     
     // Show result
     const resultDiv = document.getElementById('zakatResult');
-    document.getElementById('totalAssets').textContent = `$${totalAssets.toFixed(2)}`;
-    document.getElementById('netWealth').textContent = `$${netWealth.toFixed(2)}`;
-    document.getElementById('nisabAmount').textContent = `$${nisab.toFixed(2)}`;
-    document.getElementById('zakatDue').textContent = `$${zakatDue.toFixed(2)}`;
+    document.getElementById('totalAssets').textContent = `₹${totalAssets.toFixed(2)}`;
+    document.getElementById('netWealth').textContent = `₹${netWealth.toFixed(2)}`;
+    document.getElementById('nisabAmount').textContent = `₹${nisab.toFixed(2)}`;
+    document.getElementById('zakatDue').textContent = `₹${zakatDue.toFixed(2)}`;
     
     resultDiv.style.display = 'block';
     
     // Ask to save if Zakat is due
     if (isZakatDue && zakatDue > 0) {
         setTimeout(() => {
-            if (confirm(`Your Zakat due is $${zakatDue.toFixed(2)}. Would you like to save this as a Zakat record?`)) {
+            if (confirm(`Your Zakat due is ₹${zakatDue.toFixed(2)}. Would you like to save this as a Zakat record?`)) {
                 saveZakatRecord(zakatDue);
             }
         }, 500);
@@ -1867,7 +1867,7 @@ function renderCharityTab(tabType) {
                                       record.type === 'medical' ? 'briefcase-medical' : 'heart'}"></i>
                     ${typeNames[record.type] || 'Sadaqah'}
                 </div>
-                <div class="record-amount">$${record.amount.toFixed(2)}</div>
+                <div class="record-amount">₹${record.amount.toFixed(2)}</div>
                 <div class="record-date">${formatDateShort(new Date(record.date))}</div>
                 <div class="record-actions">
                     <button class="action-btn edit-btn" title="Edit">
@@ -1884,7 +1884,7 @@ function renderCharityTab(tabType) {
                     <i class="fas fa-scale-balanced"></i>
                     Zakat ${record.year}
                 </div>
-                <div class="record-amount">$${record.amount.toFixed(2)}</div>
+                <div class="record-amount">₹${record.amount.toFixed(2)}</div>
                 <div class="record-date">${formatDateShort(new Date(record.date))}</div>
                 <div class="record-actions">
                     <button class="action-btn delete-btn" title="Delete">
@@ -1899,7 +1899,7 @@ function renderCharityTab(tabType) {
                     Fitra ${record.year}
                 </div>
                 <div class="record-date">${record.persons} persons</div>
-                <div class="record-amount">$${record.amount.toFixed(2)}</div>
+                <div class="record-amount">₹${record.amount.toFixed(2)}</div>
                 <div class="record-actions">
                     <button class="action-btn delete-btn" title="Delete">
                         <i class="fas fa-trash"></i>
@@ -1926,7 +1926,7 @@ function renderCharityTab(tabType) {
                     ${typeNames[record.type] || 'Lillah'}
                 </div>
                 <div class="record-date">${record.organization.substring(0, 20)}${record.organization.length > 20 ? '...' : ''}</div>
-                <div class="record-amount">$${record.amount.toFixed(2)}</div>
+                <div class="record-amount">₹${record.amount.toFixed(2)}</div>
                 <div class="record-actions">
                     <button class="action-btn edit-btn" title="Edit">
                         <i class="fas fa-edit"></i>
@@ -1987,7 +1987,7 @@ function updateSadaqahSummary() {
                 <div class="icon">
                     <i class="fas fa-hand-holding-dollar"></i>
                 </div>
-                <div class="value">$${totalAmount.toFixed(2)}</div>
+                <div class="value">₹${totalAmount.toFixed(2)}</div>
                 <div class="label">Total Given</div>
             </div>
             <div class="summary-item">
@@ -2001,14 +2001,14 @@ function updateSadaqahSummary() {
                 <div class="icon">
                     <i class="fas fa-calculator"></i>
                 </div>
-                <div class="value">$${averageAmount.toFixed(2)}</div>
+                <div class="value">₹${averageAmount.toFixed(2)}</div>
                 <div class="label">Average Per Act</div>
             </div>
             <div class="summary-item">
                 <div class="icon">
                     <i class="fas fa-trophy"></i>
                 </div>
-                <div class="value">$${largestAmount.toFixed(2)}</div>
+                <div class="value">₹${largestAmount.toFixed(2)}</div>
                 <div class="label">Largest Amount</div>
             </div>
         `;
@@ -2097,19 +2097,19 @@ function renderCharityReport(period = 'month') {
     if (summaryContainer) {
         summaryContainer.innerHTML = `
             <div class="report-item">
-                <div class="value">$${totalAll.toFixed(2)}</div>
+                <div class="value">₹${totalAll.toFixed(2)}</div>
                 <div class="stat-label">Total Charity</div>
             </div>
             <div class="report-item">
-                <div class="value">$${totals.sadaqah.toFixed(2)}</div>
+                <div class="value">₹${totals.sadaqah.toFixed(2)}</div>
                 <div class="stat-label">Sadaqah</div>
             </div>
             <div class="report-item">
-                <div class="value">$${totals.zakat.toFixed(2)}</div>
+                <div class="value">₹${totals.zakat.toFixed(2)}</div>
                 <div class="stat-label">Zakat</div>
             </div>
             <div class="report-item">
-                <div class="value">$${(totals.fitra + totals.lillah).toFixed(2)}</div>
+                <div class="value">₹${(totals.fitra + totals.lillah).toFixed(2)}</div>
                 <div class="stat-label">Fitra & Lillah</div>
             </div>
         `;
@@ -2141,9 +2141,9 @@ function renderCharityReport(period = 'month') {
                                           type === 'fitra' ? 'wheat-awn' : 'hands-praying'}"></i>
                         ${typeNames[type]}
                     </div>
-                    <div class="record-amount">$${totals[type].toFixed(2)}</div>
+                    <div class="record-amount">₹${totals[type].toFixed(2)}</div>
                     <div class="record-date">${count}</div>
-                    <div class="record-amount">$${average.toFixed(2)}</div>
+                    <div class="record-amount">₹${average.toFixed(2)}</div>
                 `;
                 breakdownContainer.appendChild(breakdownEl);
             }
@@ -2178,7 +2178,7 @@ function renderCharityChart(totals) {
             bar.className = 'chart-bar';
             bar.style.height = `${height}%`;
             bar.style.background = `linear-gradient(to top, ${type.color}, ${type.color}99)`;
-            bar.title = `${type.name}: $${totals[type.key].toFixed(2)}`;
+            bar.title = `${type.name}: ₹${totals[type.key].toFixed(2)}`;
             
             const label = document.createElement('div');
             label.className = 'chart-bar-label';
