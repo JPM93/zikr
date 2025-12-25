@@ -1,4 +1,4 @@
-// admin.js - Admin Panel for Zikr Management (LocalStorage Based)
+// Setting Panel for Zikr Management - Optimized Version
 
 let zikrData = [];
 let currentRecordId = null;
@@ -13,7 +13,7 @@ const isFixedLevel = document.getElementById('isFixedLevel');
 const thresholdSection = document.getElementById('thresholdSection');
 const statusMessage = document.getElementById('statusMessage');
 
-// Initialize data - Load from localStorage
+// Initialize application
 async function initializeData() {
     try {
         // Try to load from localStorage
@@ -21,7 +21,6 @@ async function initializeData() {
         
         if (savedData) {
             zikrData = JSON.parse(savedData);
-            console.log('Loaded', zikrData.length, 'records from localStorage');
         } else {
             // If no data in localStorage, try to load from data.json
             await loadFromJsonFile();
@@ -38,7 +37,6 @@ async function initializeData() {
         }
         
     } catch (error) {
-        console.error('Error initializing data:', error);
         showStatus('Error loading data. Please refresh the page.', 'error');
         recordsList.innerHTML = `
             <div class="no-records">
@@ -53,7 +51,7 @@ async function initializeData() {
     }
 }
 
-// Load data from data.json file (only if no localStorage data)
+// Load data from data.json file
 async function loadFromJsonFile() {
     try {
         const response = await fetch('data.json');
@@ -72,8 +70,6 @@ async function loadFromJsonFile() {
         // Save to localStorage
         saveToLocalStorage();
         
-        console.log('Loaded', zikrData.length, 'records from data.json');
-        
         renderRecordsList();
         
         if (zikrData.length > 0) {
@@ -85,7 +81,6 @@ async function loadFromJsonFile() {
         return true;
         
     } catch (error) {
-        console.error('Error loading from JSON file:', error);
         showStatus('Could not load data.json. Starting with empty data.', 'error');
         zikrData = [];
         renderRecordsList();
@@ -99,9 +94,7 @@ function saveToLocalStorage() {
     try {
         localStorage.setItem('zikrAppData', JSON.stringify(zikrData));
         localStorage.setItem('zikrAppLastSync', new Date().toISOString());
-        console.log('Saved', zikrData.length, 'records to localStorage');
     } catch (error) {
-        console.error('Error saving to localStorage:', error);
         throw error;
     }
 }
@@ -187,7 +180,7 @@ function addNewRecord() {
     // Focus on title field
     document.getElementById('title').focus();
     
-    showStatus('Ready to add new zikr record', 'success');
+    showStatus('Ready to add new zikr record', 'info');
 }
 
 // Reset form to default
@@ -200,7 +193,7 @@ function resetForm() {
     
     // Set default values
     document.getElementById('recordId').value = '0';
-    document.getElementById('mukhtasarThreshold').value = 4;
+    document.getElementById('mukhtasarThreshold').value = 3;
     document.getElementById('wasatThreshold').value = 7;
     document.getElementById('mukammalThreshold').value = 11;
     document.getElementById('isFixedLevel').checked = false;
@@ -225,7 +218,33 @@ function toggleThresholdVisibility() {
     }
 }
 
-// Save record (Create or Update) - Only to localStorage
+// Validate threshold values
+function validateThresholds(record) {
+    if (!record.isFixedLevel) {
+        const mukhtasar = record.mukhtasarThreshold;
+        const wasat = record.wasatThreshold;
+        const mukammal = record.mukammalThreshold;
+        
+        // Check if all are odd numbers
+        if (mukhtasar % 2 === 0 || wasat % 2 === 0 || mukammal % 2 === 0) {
+            return 'Threshold values must be odd numbers';
+        }
+        
+        // Check increasing order
+        if (mukhtasar >= wasat || wasat >= mukammal) {
+            return 'Thresholds must be in increasing order: Short < Medium < Full';
+        }
+        
+        // Check minimum values
+        if (mukhtasar < 3 || wasat < 7 || mukammal < 11) {
+            return 'Minimum thresholds: Short=3, Medium=7, Full=11';
+        }
+    }
+    
+    return null;
+}
+
+// Save record (Create or Update)
 function saveRecord() {
     // Validate form
     if (!zikrForm.checkValidity()) {
@@ -255,13 +274,11 @@ function saveRecord() {
         return;
     }
     
-    // Validate thresholds for countable zikr
-    if (!record.isFixedLevel) {
-        if (record.mukhtasarThreshold >= record.wasatThreshold ||
-            record.wasatThreshold >= record.mukammalThreshold) {
-            showStatus('Thresholds must be in increasing order: Short < Medium < Full', 'error');
-            return;
-        }
+    // Validate thresholds
+    const thresholdError = validateThresholds(record);
+    if (thresholdError) {
+        showStatus(thresholdError, 'error');
+        return;
     }
     
     try {
@@ -272,14 +289,14 @@ function saveRecord() {
             // Update existing record - preserve totalCount
             record.totalCount = zikrData[existingIndex].totalCount;
             zikrData[existingIndex] = record;
-            showStatus(`✅ Record "${record.title}" updated successfully!`, 'success');
+            showStatus(`Record "${record.title}" updated successfully!`, 'success');
         } else {
             // Add new record
             zikrData.push(record);
-            showStatus(`✅ Record "${record.title}" created successfully!`, 'success');
+            showStatus(`Record "${record.title}" created successfully!`, 'success');
         }
         
-        // Save to localStorage ONLY (no auto-download)
+        // Save to localStorage
         saveToLocalStorage();
         
         // Update UI
@@ -287,12 +304,11 @@ function saveRecord() {
         selectRecord(record.id);
         
     } catch (error) {
-        console.error('Error saving record:', error);
-        showStatus('❌ Error saving record. Please try again.', 'error');
+        showStatus('Error saving record. Please try again.', 'error');
     }
 }
 
-// Delete current record - Only from localStorage
+// Delete current record
 function deleteRecord() {
     if (!currentRecordId) return;
     
@@ -307,11 +323,11 @@ function deleteRecord() {
         // Remove from array
         zikrData = zikrData.filter(z => z.id !== currentRecordId);
         
-        // Save to localStorage ONLY (no auto-download)
+        // Save to localStorage
         saveToLocalStorage();
         
         // Update UI
-        showStatus(`🗑️ Record "${record.title}" deleted successfully!`, 'success');
+        showStatus(`Record "${record.title}" deleted successfully!`, 'success');
         
         // Select next record or reset form
         if (zikrData.length > 0) {
@@ -321,18 +337,19 @@ function deleteRecord() {
         }
         
     } catch (error) {
-        console.error('Error deleting record:', error);
-        showStatus('❌ Error deleting record. Please try again.', 'error');
+        showStatus('Error deleting record. Please try again.', 'error');
     }
 }
 
-// Export data to JSON file (Manual download)
-function exportData() {
+// ========== ZIKR DATA MANAGEMENT ==========
+
+// Export Zikr data to JSON file
+function exportZikrData() {
     try {
-        // Create JSON string with proper formatting
+        // Get current data
         const jsonData = JSON.stringify(zikrData, null, 2);
         
-        // Create download link for the JSON file
+        // Create download link
         const blob = new Blob([jsonData], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -343,16 +360,15 @@ function exportData() {
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
         
-        showStatus('📥 Data exported to JSON file', 'success');
+        showStatus('Zikr data exported successfully!', 'success');
         
     } catch (error) {
-        console.error('Error exporting data:', error);
-        showStatus('❌ Error exporting data. Please try again.', 'error');
+        showStatus('Error exporting Zikr data. Please try again.', 'error');
     }
 }
 
-// Import data from file (Manual upload)
-function importData(event) {
+// Import Zikr data from file
+function importZikrData(event) {
     const file = event.target.files[0];
     if (!file) return;
     
@@ -402,84 +418,328 @@ function importData(event) {
                 resetForm();
             }
             
-            showStatus('📤 Data imported successfully!', 'success');
+            showStatus('Zikr data imported successfully!', 'success');
             
         } catch (error) {
-            console.error('Error importing data:', error);
-            showStatus('❌ Invalid JSON file. Please check the format.', 'error');
+            showStatus('Invalid JSON file. Please check the format.', 'error');
         }
     };
+    
+    reader.onerror = function() {
+        showStatus('Error reading file. Please try again.', 'error');
+    };
+    
     reader.readAsText(file);
     
     // Reset file input
     event.target.value = '';
 }
 
-// Backup data to browser storage
-function backupData() {
+// ========== SALAH DATA MANAGEMENT ==========
+
+// Export Salah data to JSON file
+function exportSalahData() {
     try {
-        const jsonData = JSON.stringify(zikrData, null, 2);
-        localStorage.setItem('zikrData_backup', jsonData);
-        localStorage.setItem('zikrData_backup_date', new Date().toISOString());
-        showStatus('💾 Data backed up to browser storage', 'success');
+        // Collect all Salah data from localStorage
+        const salahData = {};
+        const now = new Date();
+        
+        // Get last 30 days of Salah data
+        for (let i = 0; i < 30; i++) {
+            const date = new Date();
+            date.setDate(now.getDate() - i);
+            const dateKey = date.toISOString().split('T')[0];
+            
+            // Get Salah data
+            const salah = localStorage.getItem(`salah_${dateKey}`);
+            if (salah) {
+                salahData[dateKey] = JSON.parse(salah);
+            }
+            
+            // Get Murakab data
+            const murakab = localStorage.getItem(`murakab_${dateKey}`);
+            if (murakab) {
+                if (!salahData[dateKey]) salahData[dateKey] = {};
+                salahData[dateKey].murakab = JSON.parse(murakab);
+            }
+            
+            // Get Roza data
+            const roza = localStorage.getItem(`roza_${dateKey}`);
+            if (roza) {
+                if (!salahData[dateKey]) salahData[dateKey] = {};
+                salahData[dateKey].roza = JSON.parse(roza);
+            }
+        }
+        
+        // Get overall progress
+        const overallProgress = {
+            salah: localStorage.getItem('salahOverallProgress') || '0',
+            roza: localStorage.getItem('rozaOverallProgress') || '0'
+        };
+        
+        // Combine all data
+        const exportData = {
+            metadata: {
+                exportDate: new Date().toISOString(),
+                dataType: 'salah_tracking',
+                daysCount: Object.keys(salahData).length
+            },
+            salahData: salahData,
+            overallProgress: overallProgress
+        };
+        
+        // Create JSON string
+        const jsonData = JSON.stringify(exportData, null, 2);
+        
+        // Create download link
+        const blob = new Blob([jsonData], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `salah_data_${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        showStatus('Salah data exported successfully!', 'success');
+        
     } catch (error) {
-        showStatus('❌ Error creating backup', 'error');
+        showStatus('Error exporting Salah data. Please try again.', 'error');
     }
 }
 
-// Restore data from browser backup
-function restoreData() {
+// Import Salah data from file
+function importSalahData(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const importedData = JSON.parse(e.target.result);
+            
+            if (!importedData.salahData || typeof importedData.salahData !== 'object') {
+                throw new Error('Invalid Salah data format');
+            }
+            
+            if (!confirm('Import Salah data?\n\nExisting Salah data for same dates will be overwritten.')) {
+                return;
+            }
+            
+            // Import Salah data
+            let importedCount = 0;
+            Object.entries(importedData.salahData).forEach(([dateKey, data]) => {
+                if (data) {
+                    // Save Salah data
+                    if (Object.keys(data).length > 0) {
+                        localStorage.setItem(`salah_${dateKey}`, JSON.stringify(data));
+                        importedCount++;
+                    }
+                    
+                    // Save Murakab data if exists
+                    if (data.murakab) {
+                        localStorage.setItem(`murakab_${dateKey}`, JSON.stringify(data.murakab));
+                    }
+                    
+                    // Save Roza data if exists
+                    if (data.roza) {
+                        localStorage.setItem(`roza_${dateKey}`, JSON.stringify(data.roza));
+                    }
+                }
+            });
+            
+            // Import overall progress
+            if (importedData.overallProgress) {
+                if (importedData.overallProgress.salah) {
+                    localStorage.setItem('salahOverallProgress', importedData.overallProgress.salah);
+                }
+                if (importedData.overallProgress.roza) {
+                    localStorage.setItem('rozaOverallProgress', importedData.overallProgress.roza);
+                }
+            }
+            
+            showStatus(`Successfully imported ${importedCount} days of Salah data!`, 'success');
+            
+        } catch (error) {
+            showStatus('Invalid Salah data file. Please check the format.', 'error');
+        }
+    };
+    
+    reader.onerror = function() {
+        showStatus('Error reading file. Please try again.', 'error');
+    };
+    
+    reader.readAsText(file);
+    
+    // Reset file input
+    event.target.value = '';
+}
+
+// Clear all Salah data
+function clearAllSalahData() {
+    if (!confirm('⚠️ WARNING: This will delete ALL Salah tracking data!\n\nThis includes prayer records, fasting data, and meditation logs.\n\nThis action cannot be undone!\n\nAre you absolutely sure?')) {
+        return;
+    }
+    
     try {
-        const backup = localStorage.getItem('zikrData_backup');
+        // Remove all Salah-related data from localStorage
+        for (let i = localStorage.length - 1; i >= 0; i--) {
+            const key = localStorage.key(i);
+            if (key.startsWith('salah_') || key.startsWith('murakab_') || key.startsWith('roza_')) {
+                localStorage.removeItem(key);
+            }
+        }
+        
+        // Remove overall progress
+        localStorage.removeItem('salahOverallProgress');
+        localStorage.removeItem('rozaOverallProgress');
+        
+        // Remove monthly stats
+        for (let i = localStorage.length - 1; i >= 0; i--) {
+            const key = localStorage.key(i);
+            if (key.startsWith('roza_stats_') || key.startsWith('murakab_stats_')) {
+                localStorage.removeItem(key);
+            }
+        }
+        
+        showStatus('All Salah data has been cleared!', 'success');
+        
+    } catch (error) {
+        showStatus('Error clearing Salah data. Please try again.', 'error');
+    }
+}
+
+// ========== BACKUP AND RESTORE ==========
+
+// Backup all data to browser storage
+function backupAllData() {
+    try {
+        // Collect all data
+        const backupData = {
+            timestamp: new Date().toISOString(),
+            zikrData: zikrData,
+            salahData: {}
+        };
+        
+        // Collect Salah data (last 90 days)
+        const now = new Date();
+        for (let i = 0; i < 90; i++) {
+            const date = new Date();
+            date.setDate(now.getDate() - i);
+            const dateKey = date.toISOString().split('T')[0];
+            
+            // Get Salah data
+            const salah = localStorage.getItem(`salah_${dateKey}`);
+            if (salah) {
+                backupData.salahData[dateKey] = JSON.parse(salah);
+            }
+            
+            // Get Murakab data
+            const murakab = localStorage.getItem(`murakab_${dateKey}`);
+            if (murakab) {
+                if (!backupData.salahData[dateKey]) backupData.salahData[dateKey] = {};
+                backupData.salahData[dateKey].murakab = JSON.parse(murakab);
+            }
+            
+            // Get Roza data
+            const roza = localStorage.getItem(`roza_${dateKey}`);
+            if (roza) {
+                if (!backupData.salahData[dateKey]) backupData.salahData[dateKey] = {};
+                backupData.salahData[dateKey].roza = JSON.parse(roza);
+            }
+        }
+        
+        // Save to localStorage
+        localStorage.setItem('full_backup_data', JSON.stringify(backupData));
+        localStorage.setItem('full_backup_timestamp', new Date().toISOString());
+        
+        showStatus('Complete backup created successfully!', 'success');
+        
+    } catch (error) {
+        showStatus('Error creating backup. Please try again.', 'error');
+    }
+}
+
+// Restore all data from browser backup
+function restoreAllData() {
+    try {
+        const backup = localStorage.getItem('full_backup_data');
         if (!backup) {
             showStatus('No backup found in browser storage', 'error');
             return;
         }
         
-        if (!confirm('Restore data from backup? Current data will be replaced.')) {
+        if (!confirm('Restore all data from backup?\n\nAll current data will be replaced.')) {
             return;
         }
         
-        zikrData = JSON.parse(backup);
-        saveToLocalStorage();
-        renderRecordsList();
+        const backupData = JSON.parse(backup);
         
-        if (zikrData.length > 0) {
-            selectRecord(zikrData[0].id);
-        } else {
-            resetForm();
+        // Restore Zikr data
+        if (backupData.zikrData && Array.isArray(backupData.zikrData)) {
+            zikrData = backupData.zikrData;
+            saveToLocalStorage();
+            renderRecordsList();
+            
+            if (zikrData.length > 0) {
+                selectRecord(zikrData[0].id);
+            } else {
+                resetForm();
+            }
         }
         
-        showStatus('🔄 Data restored from backup', 'success');
+        // Restore Salah data
+        if (backupData.salahData && typeof backupData.salahData === 'object') {
+            // Clear existing Salah data first
+            for (let i = localStorage.length - 1; i >= 0; i--) {
+                const key = localStorage.key(i);
+                if (key.startsWith('salah_') || key.startsWith('murakab_') || key.startsWith('roza_')) {
+                    localStorage.removeItem(key);
+                }
+            }
+            
+            // Restore from backup
+            Object.entries(backupData.salahData).forEach(([dateKey, data]) => {
+                if (data) {
+                    localStorage.setItem(`salah_${dateKey}`, JSON.stringify(data));
+                    
+                    if (data.murakab) {
+                        localStorage.setItem(`murakab_${dateKey}`, JSON.stringify(data.murakab));
+                    }
+                    
+                    if (data.roza) {
+                        localStorage.setItem(`roza_${dateKey}`, JSON.stringify(data.roza));
+                    }
+                }
+            });
+        }
+        
+        showStatus('All data restored from backup!', 'success');
+        
     } catch (error) {
-        showStatus('❌ Error restoring backup', 'error');
+        showStatus('Error restoring backup. Please try again.', 'error');
     }
 }
 
-// Reset to original data.json
-async function resetToOriginal() {
-    if (!confirm('Reset to original data from data.json?\n\nAll changes will be lost.')) {
+// Reset Zikr data to default
+function resetToDefault() {
+    if (!confirm('Reset Zikr data to original values?\n\nAll changes will be lost.')) {
         return;
     }
     
     try {
-        await loadFromJsonFile();
-        renderRecordsList();
-        
-        if (zikrData.length > 0) {
-            selectRecord(zikrData[0].id);
-        } else {
-            resetForm();
-        }
-        
-        showStatus('🔄 Reset to original data successful', 'success');
+        loadFromJsonFile();
+        showStatus('Zikr data reset to original values!', 'success');
     } catch (error) {
-        showStatus('❌ Error resetting data', 'error');
+        showStatus('Error resetting data', 'error');
     }
 }
 
+// ========== HELPER FUNCTIONS ==========
+
 // Show status message
-function showStatus(message, type = 'success') {
+function showStatus(message, type = 'info') {
     statusMessage.textContent = message;
     statusMessage.className = `status-message status-${type}`;
     statusMessage.style.display = 'block';
@@ -493,7 +753,7 @@ function hideStatus() {
     statusMessage.style.display = 'none';
 }
 
-// Threshold increment/decrement handler
+// Setup threshold controls
 function setupThresholdControls() {
     // Mukhtasar threshold controls
     const mukhtasarInput = document.getElementById('mukhtasarThreshold');
@@ -507,7 +767,6 @@ function setupThresholdControls() {
             if (this.value < 3) this.value = 3;
         });
         
-        // Step by 2
         mukhtasarInput.step = 2;
     }
     
@@ -523,7 +782,6 @@ function setupThresholdControls() {
             if (this.value < 7) this.value = 7;
         });
         
-        // Step by 2
         wasatInput.step = 2;
     }
     
@@ -539,14 +797,11 @@ function setupThresholdControls() {
             if (this.value < 11) this.value = 11;
         });
         
-        // Step by 2
         mukammalInput.step = 2;
     }
-    
-    console.log('Threshold controls setup with step=2');
 }
 
-// Event Listeners
+// ========== EVENT LISTENERS ==========
 document.addEventListener('DOMContentLoaded', function() {
     // Load initial data
     initializeData();
@@ -559,6 +814,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Fixed level checkbox handler
     isFixedLevel.addEventListener('change', toggleThresholdVisibility);
+    
+    // Setup threshold controls
+    setupThresholdControls();
     
     // Keyboard shortcuts
     document.addEventListener('keydown', function(e) {
@@ -584,8 +842,6 @@ document.addEventListener('DOMContentLoaded', function() {
             resetForm();
         }
     });
-
-    setupThresholdControls();
 });
 
 // Make functions available globally
@@ -593,8 +849,11 @@ window.selectRecord = selectRecord;
 window.addNewRecord = addNewRecord;
 window.resetForm = resetForm;
 window.deleteRecord = deleteRecord;
-window.exportData = exportData;
-window.importData = importData;
-window.backupData = backupData;
-window.restoreData = restoreData;
-window.resetToOriginal = resetToOriginal;
+window.exportZikrData = exportZikrData;
+window.importZikrData = importZikrData;
+window.exportSalahData = exportSalahData;
+window.importSalahData = importSalahData;
+window.backupAllData = backupAllData;
+window.restoreAllData = restoreAllData;
+window.resetToDefault = resetToDefault;
+window.clearAllSalahData = clearAllSalahData;

@@ -1,4 +1,4 @@
-// app.js - Main Zikr App Logic (LocalStorage Based)
+// Main Zikr App Logic (LocalStorage Based)
 
 let zikrData = [];
 let currentZikrIndex = 0;
@@ -9,22 +9,14 @@ let currentLevel = 'wasat';
 let zikrSlider = null;
 let floatingCounter = null;
 
-// Initialize DOM elements - ONLY check for absolutely required elements
+// Initialize DOM elements - only check for absolutely required elements
 function initializeDOMElements() {
     zikrSlider = document.getElementById('zikrSlider');
     floatingCounter = document.getElementById('floatingCounter');
     
-    // Check only for absolutely required elements
     if (!zikrSlider) {
-        console.error('zikrSlider element is missing. Please check the HTML structure.');
         return false;
     }
-    
-    // Floating counter is optional - it might not exist initially
-    console.log('DOM elements initialized:', {
-        zikrSlider: !!zikrSlider,
-        floatingCounter: !!floatingCounter
-    });
     
     return true;
 }
@@ -32,22 +24,16 @@ function initializeDOMElements() {
 // Load data from localStorage with fallback to data.json
 async function loadZikrData() {
     try {
-        // Try to load from localStorage first
         const savedData = localStorage.getItem('zikrAppData');
         
         if (savedData) {
-            // Data exists in localStorage
             zikrData = JSON.parse(savedData);
-            console.log('Loaded', zikrData.length, 'zikr records from localStorage');
             initializeApp();
         } else {
-            // No data in localStorage, try to load from data.json
-            console.log('No data in localStorage, trying data.json...');
             await loadFromJsonFile();
         }
         
     } catch (error) {
-        console.error('Error loading data:', error);
         showErrorMessage('Error loading data. Please check if data.json file exists.');
     }
 }
@@ -72,18 +58,15 @@ async function loadFromJsonFile() {
         localStorage.setItem('zikrAppData', JSON.stringify(zikrData));
         localStorage.setItem('zikrAppLastSync', new Date().toISOString());
         
-        console.log('Loaded', zikrData.length, 'records from data.json and saved to localStorage');
         initializeApp();
         
     } catch (error) {
-        console.error('Error loading from JSON file:', error);
         showErrorMessage('Could not load data. Please make sure data.json file exists in the same folder.');
     }
 }
 
 // Initialize app with loaded data
 function initializeApp() {
-    // Remove loading message
     const loadingEl = document.getElementById('loading');
     if (loadingEl) {
         loadingEl.style.display = 'none';
@@ -131,8 +114,8 @@ function showNoDataMessage() {
         <div style="padding: 40px; text-align: center;">
             <i class="fas fa-book-open" style="font-size: 50px; color: #ccc; margin-bottom: 20px;"></i>
             <h3 style="color: #002b5b; margin-bottom: 10px;">No Zikr Data Found</h3>
-            <p style="color: #666; margin-bottom: 20px;">Please initialize data using the Admin Panel</p>
-            <a href="admin.html" class="nav-btn" style="
+            <p style="color: #666; margin-bottom: 20px;">Please initialize data using the Setting Panel</p>
+            <a href="setting.html" class="nav-btn" style="
                 text-decoration: none; 
                 display: inline-block;
                 padding: 12px 30px;
@@ -141,7 +124,7 @@ function showNoDataMessage() {
                 border-radius: 50px;
                 font-weight: bold;
             ">
-                <i class="fas fa-cog"></i> Go to Admin Panel
+                <i class="fas fa-cog"></i> Go to Setting Panel
             </a>
         </div>
     `;
@@ -158,7 +141,7 @@ function showErrorMessage(message) {
                 <p style="margin-bottom: 20px; font-size: 14px;">
                     Possible solutions:<br>
                     1. Make sure data.json file exists in the same folder<br>
-                    2. Open Admin Panel first to initialize data<br>
+                    2. Open Setting Panel first to initialize data<br>
                     3. Check browser console for errors
                 </p>
                 <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
@@ -172,7 +155,7 @@ function showErrorMessage(message) {
                     ">
                         <i class="fas fa-redo"></i> Reload Page
                     </button>
-                    <a href="admin.html" style="
+                    <a href="setting.html" style="
                         padding: 10px 20px;
                         background: #1a5f7a;
                         color: white;
@@ -181,7 +164,7 @@ function showErrorMessage(message) {
                         cursor: pointer;
                         text-decoration: none;
                     ">
-                        <i class="fas fa-cog"></i> Open Admin
+                        <i class="fas fa-cog"></i> Open Setting Panel
                     </a>
                 </div>
             </div>
@@ -213,7 +196,6 @@ function initializeFromStorage() {
 
 // Load saved counts for zikr
 function loadSavedCounts() {
-    // Counts are already part of zikrData from localStorage
     // Ensure all zikr have totalCount
     zikrData.forEach(zikr => {
         if (typeof zikr.totalCount !== 'number') {
@@ -224,11 +206,6 @@ function loadSavedCounts() {
 
 // Save to localStorage
 function saveToStorage() {
-    // Save counts for current zikr
-    if (zikrData.length > 0 && currentZikrIndex < zikrData.length) {
-        localStorage.setItem(`zikr_${zikrData[currentZikrIndex].id}_count`, zikrData[currentZikrIndex].totalCount.toString());
-    }
-    
     // Save preferences
     localStorage.setItem('current_level', currentLevel);
     localStorage.setItem('current_language', currentLanguage);
@@ -237,24 +214,19 @@ function saveToStorage() {
     try {
         localStorage.setItem('zikrAppData', JSON.stringify(zikrData));
     } catch (error) {
-        console.error('Error saving to localStorage:', error);
+        // Handle storage error silently
     }
 }
 
 // Clear all localStorage for zikr counts
 function clearAllStorage() {
     zikrData.forEach(zikr => {
-        localStorage.removeItem(`zikr_${zikr.id}_count`);
+        zikr.totalCount = 0;
     });
     
     // Also clear preferences
     localStorage.removeItem('current_level');
     localStorage.removeItem('current_language');
-    
-    // Reset counts in data
-    zikrData.forEach(zikr => {
-        zikr.totalCount = 0;
-    });
     
     // Save updated data
     localStorage.setItem('zikrAppData', JSON.stringify(zikrData));
@@ -292,7 +264,7 @@ function updateFloatingCounter() {
         targetDisplay.textContent = `Target: ${maxCount}`;
         floatingCounterDisplay.textContent = currentZikr.totalCount;
         
-        // ✅ Fix: Display total count if you have the element
+        // Display total count
         const totalCountDisplay = document.getElementById('totalCountDisplay');
         if (totalCountDisplay) {
             const totalCount = zikrData.reduce((sum, zikr) => sum + (zikr.totalCount || 0), 0);
@@ -396,13 +368,15 @@ function renderZikrSlider() {
     
     updateLevelButtons();
 
-    document.addEventListener('change', function(e) {
-        if (e.target.id === 'languageSelect') {
+    // Language selector event listener
+    const languageSelect = document.getElementById('languageSelect');
+    if (languageSelect) {
+        languageSelect.onchange = function(e) {
             currentLanguage = e.target.value;
             renderZikrSlider();
             saveToStorage();
-        }
-    });
+        };
+    }
 }
 
 // Show tooltip
@@ -535,7 +509,7 @@ function setupEventListeners() {
             });
             e.target.classList.add('active');
             
-            // ✅ IMPORTANT: Update floating counter
+            // Update floating counter
             updateFloatingCounter();
             
             renderZikrSlider();
@@ -560,20 +534,16 @@ function setupEventListeners() {
 
 // Initialize app
 function initApp() {
-    console.log('Initializing Zikr App...');
-    
     // Wait for DOM to be fully ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {
             if (initializeDOMElements()) {
-                console.log('DOM elements initialized successfully');
                 loadZikrData();
             }
         });
     } else {
         // DOM already loaded
         if (initializeDOMElements()) {
-            console.log('DOM elements initialized successfully');
             loadZikrData();
         }
     }
